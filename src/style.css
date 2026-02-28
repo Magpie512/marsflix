@@ -1,0 +1,68 @@
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+header {
+    top:0;
+    width:100%;
+    padding: 10px 20px;
+    position: fixed;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 10;
+    background-color: rgba(21, 21, 21, 0.8);
+}
+
+nav ul {
+    display: flex;
+    gap: 1rem;
+    list-style: none;
+}
+
+nav ul li {
+    right:0;
+    display: inline-block;
+}
+
+#herocard img{
+    position:fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+}
+
+#herocard h2 {
+    position: fixed;
+    top: 46.5%;
+    left: 1%;
+    font-size: 2.5em;
+}
+
+section:nth-child(2) {
+    margin-top: 40vh;
+}
+
+footer {
+    bottom: 0;
+    position: fixed;
+    width: 100%;
+    margin-top: 2rem;
+    padding: 1rem;
+    text-align: center;
+    font-size: 0.9em;
+    color: #666;
+}
+
+@media (max-width: 600px) {
+    header {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    nav ul {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+}
