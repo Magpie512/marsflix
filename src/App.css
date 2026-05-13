@@ -214,8 +214,10 @@ header h1:hover {
   border: 1.5px solid rgba(143, 188, 90, 0.2);
   border-radius: 6px;
   transition: var(--transition);
-  flex: 1;
-  min-width: 0;
+  flex: none;
+  width: 100%;
+  max-width: 300px;
+  margin-left: auto;
 }
 
 .search-wrapper:focus-within {
