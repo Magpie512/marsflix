@@ -8,24 +8,79 @@ import {
   getTVDetails,
 } from './services/api'
 
+// ── Embed sources (tried in order) ──────────────────────────────
+const getSources = (id, type, season, episode) =>
+  type === "tv"
+    ? [
+        { label: "Source 1", url: `https://vidsrc.me/embed/tv?tmdb=${id}&season=${season}&episode=${episode}` },
+        { label: "Source 2", url: `https://embed.su/embed/tv/${id}/${season}/${episode}` },
+        { label: "Source 3", url: `https://multiembed.mov/?video_id=${id}&tmdb=1&s=${season}&e=${episode}` },
+        { label: "Source 4", url: `https://vidsrc.xyz/embed/tv?tmdb=${id}&season=${season}&episode=${episode}` },
+      ]
+    : [
+        { label: "Source 1", url: `https://vidsrc.me/embed/movie?tmdb=${id}` },
+        { label: "Source 2", url: `https://embed.su/embed/movie/${id}` },
+        { label: "Source 3", url: `https://multiembed.mov/?video_id=${id}&tmdb=1` },
+        { label: "Source 4", url: `https://vidsrc.xyz/embed/movie?tmdb=${id}` },
+      ];
+
+// ── Player component with source switcher ───────────────────────
+function Player({ movieId, mediaType, season, episode }) {
+  const [sourceIdx, setSourceIdx] = useState(0);
+  const sources = getSources(movieId, mediaType, season, episode);
+
+  // Reset to source 1 when movie/episode changes
+  useEffect(() => { setSourceIdx(0); }, [movieId, season, episode]);
+
+  return (
+    <div className="player-wrap">
+      <div className="source-tabs">
+        {sources.map((s, i) => (
+          <button
+            key={i}
+            className={`source-tab ${sourceIdx === i ? "source-tab-active" : ""}`}
+            onClick={() => setSourceIdx(i)}
+          >
+            {s.label}
+          </button>
+        ))}
+        <span className="source-hint">Not working? Try another source →</span>
+      </div>
+      <div className="player-container">
+        <iframe
+          key={`${movieId}-${season}-${episode}-${sourceIdx}`}
+          src={sources[sourceIdx].url}
+          width="100%"
+          height="500"
+          frameBorder="0"
+          allowFullScreen
+          allow="autoplay; encrypted-media; picture-in-picture"
+          title="Player"
+          referrerPolicy="no-referrer"
+        />
+      </div>
+    </div>
+  );
+}
+
 function App() {
-  const [movies, setMovies] = useState([]);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [loading, setLoading] = useState(true);
+  const [movies, setMovies]             = useState([]);
+  const [searchQuery, setSearchQuery]   = useState("");
+  const [loading, setLoading]           = useState(true);
   const [selectedMovie, setSelectedMovie] = useState(null);
-  const [mediaType, setMediaType] = useState("movie");
+  const [mediaType, setMediaType]       = useState("movie");
   const [resultsLabel, setResultsLabel] = useState("");
-  const [genres, setGenres] = useState([]);
-  const [activeGenre, setActiveGenre] = useState(null);
+  const [genres, setGenres]             = useState([]);
+  const [activeGenre, setActiveGenre]   = useState(null);
   const [genreDropdownOpen, setGenreDropdownOpen] = useState(false);
   const [showAdblockBanner, setShowAdblockBanner] = useState(false);
-  const [tvDetails, setTvDetails] = useState(null);
-  const [selectedSeason, setSelectedSeason] = useState(1);
+  const [tvDetails, setTvDetails]       = useState(null);
+  const [selectedSeason, setSelectedSeason]   = useState(1);
   const [selectedEpisode, setSelectedEpisode] = useState(1);
 
-  const debounceTimer = useRef(null);
-  const searchInputRef = useRef(null);
-  const genreDropRef = useRef(null);
+  const debounceTimer   = useRef(null);
+  const searchInputRef  = useRef(null);
+  const genreDropRef    = useRef(null);
 
   useEffect(() => {
     const dismissed = sessionStorage.getItem("adblock-dismissed");
@@ -138,26 +193,21 @@ function App() {
     setTvDetails(null);
   };
 
-  const getPlayerUrl = (id, type, season = 1, episode = 1) =>
-    type === "tv"
-      ? `https://vidsrc.me/embed/tv?tmdb=${id}&season=${season}&episode=${episode}`
-      : `https://vidsrc.me/embed/movie?tmdb=${id}`;
-
-  const getTitle = (i) => i?.title || i?.name || "";
-  const getPoster = (i) => i?.poster_path
+  const getTitle    = (i) => i?.title || i?.name || "";
+  const getPoster   = (i) => i?.poster_path
     ? `https://image.tmdb.org/t/p/w500${i.poster_path}`
     : "https://via.placeholder.com/500x750?text=No+Image";
   const getBackdrop = (i) => i?.backdrop_path
     ? `https://image.tmdb.org/t/p/original${i.backdrop_path}`
     : null;
-  const getYear = (i) => {
+  const getYear     = (i) => {
     const d = i?.release_date || i?.first_air_date;
     return d ? new Date(d).getFullYear() : "N/A";
   };
 
   const heroMovie = movies[0] ?? null;
   const numSeasons = tvDetails?.number_of_seasons ?? 1;
-  const episodesInSeason = tvDetails?.seasons?.find(s => s.season_number === selectedSeason)?.episode_count ?? 12;
+  const episodesInSeason = tvDetails?.seasons?.find(s => s.season_number === selectedSeason)?.episode_count ?? 24;
 
   return (
     <div className="app-container">
@@ -226,7 +276,7 @@ function App() {
               <span className="spinner" />
             ) : (
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
+                <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
               </svg>
             )}
           </span>
@@ -336,18 +386,12 @@ function App() {
               </div>
             )}
 
-            <div className="player-container">
-              <iframe
-                key={`${selectedMovie.id}-${selectedSeason}-${selectedEpisode}`}
-                src={getPlayerUrl(selectedMovie.id, mediaType, selectedSeason, selectedEpisode)}
-                width="100%"
-                height="500"
-                frameBorder="0"
-                allowFullScreen
-                allow="autoplay; encrypted-media"
-                title={getTitle(selectedMovie)}
-              />
-            </div>
+            <Player
+              movieId={selectedMovie.id}
+              mediaType={mediaType}
+              season={selectedSeason}
+              episode={selectedEpisode}
+            />
 
             <div className="movie-details">
               <p className="overview">{selectedMovie.overview}</p>
