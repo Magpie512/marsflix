@@ -1,4 +1,4 @@
-/* ── Source switcher tabs (add to bottom of App.css) ── */
+/* ── Source switcher tabs ── */
 .player-wrap {
   width: 100%;
   background: #000;
@@ -51,4 +51,79 @@
 @media (max-width: 500px) {
   .source-hint { display: none; }
   .source-tab { padding: 5px 10px; font-size: 0.75rem; }
+}
+
+/* ── Load More ── */
+.load-more-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 32px 0 48px;
+}
+
+.load-more-btn {
+  background: rgba(143, 188, 90, 0.12);
+  border: 1.5px solid rgba(143, 188, 90, 0.4);
+  color: var(--accent-green, #8fbc5a);
+  padding: 12px 40px;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 160px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.load-more-btn:hover:not(:disabled) {
+  background: rgba(143, 188, 90, 0.22);
+  border-color: var(--accent-green, #8fbc5a);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 16px rgba(143, 188, 90, 0.15);
+}
+
+.load-more-btn:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.load-more-spinner {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(143, 188, 90, 0.3);
+  border-top-color: var(--accent-green, #8fbc5a);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.load-more-hint {
+  font-size: 0.75rem;
+  color: rgba(229, 229, 229, 0.3);
+}
+
+/* ── Card type badge (shown in "All" mode) ── */
+.movie-card {
+  position: relative;
+}
+
+.card-type-badge {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  background: rgba(0, 0, 0, 0.65);
+  border-radius: 4px;
+  padding: 2px 5px;
+  font-size: 0.75rem;
+  backdrop-filter: blur(4px);
+  pointer-events: none;
+  z-index: 2;
 }
