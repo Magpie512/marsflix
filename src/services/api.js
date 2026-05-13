@@ -11,10 +11,11 @@ const apiClient = axios.create({
 const fetchData = async (endpoint, options = {}) => {
   try {
     const response = await apiClient.get(endpoint, { params: options });
-    return response.data.results ?? response.data;
+    console.log(`Data from ${endpoint}:`, response.data); 
+    return response.data; 
   } catch (error) {
-    console.error(`API Error at ${endpoint}:`, error);
-    return [];
+    console.error(`API Error at ${endpoint}:`, error.response?.data?.status_message || error.message);
+    return null;
   }
 };
 
