@@ -8,26 +8,32 @@ const apiClient = axios.create({
   params: { api_key: API_KEY },
 });
 
+// Returns raw response.data (callers extract what they need)
 const fetchData = async (endpoint, options = {}) => {
   try {
     const response = await apiClient.get(endpoint, { params: options });
-    console.log(`Data from ${endpoint}:`, response.data); 
-    return response.data; 
+    return response.data;
   } catch (error) {
     console.error(`API Error at ${endpoint}:`, error.response?.data?.status_message || error.message);
     return null;
   }
 };
 
-export const getPopularMovies  = () => fetchData('/movie/popular');
-export const getPopularTV      = () => fetchData('/tv/popular');
-export const searchMovies      = (query) => fetchData('/search/movie', { query });
-export const searchTV          = (query) => fetchData('/search/tv',    { query });
+// List endpoints: extract .results array
+const fetchList = async (endpoint, options = {}) => {
+  const data = await fetchData(endpoint, options);
+  return data?.results ?? [];
+};
 
-export const getMovieGenres    = () => fetchData('/genre/movie/list').then(d => d.genres ?? []);
-export const getTVGenres       = () => fetchData('/genre/tv/list').then(d => d.genres ?? []);
+export const getPopularMovies  = () => fetchList('/movie/popular');
+export const getPopularTV      = () => fetchList('/tv/popular');
+export const searchMovies      = (query) => fetchList('/search/movie', { query });
+export const searchTV          = (query) => fetchList('/search/tv',    { query });
 
-export const discoverMovies    = (genreId) => fetchData('/discover/movie', { with_genres: genreId, sort_by: 'popularity.desc' });
-export const discoverTV        = (genreId) => fetchData('/discover/tv',    { with_genres: genreId, sort_by: 'popularity.desc' });
+export const getMovieGenres    = () => fetchData('/genre/movie/list').then(d => d?.genres ?? []);
+export const getTVGenres       = () => fetchData('/genre/tv/list').then(d => d?.genres ?? []);
+
+export const discoverMovies    = (genreId) => fetchList('/discover/movie', { with_genres: genreId, sort_by: 'popularity.desc' });
+export const discoverTV        = (genreId) => fetchList('/discover/tv',    { with_genres: genreId, sort_by: 'popularity.desc' });
 
 export const getTVDetails      = (id) => fetchData(`/tv/${id}`);
