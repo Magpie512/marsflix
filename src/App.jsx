@@ -9,23 +9,23 @@ import {
 } from './services/api'
 
 function App() {
-  const [movies, setMovies]             = useState([]);
-  const [searchQuery, setSearchQuery]   = useState("");
-  const [loading, setLoading]           = useState(true);
+  const [movies, setMovies] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [loading, setLoading] = useState(true);
   const [selectedMovie, setSelectedMovie] = useState(null);
-  const [mediaType, setMediaType]       = useState("movie");
+  const [mediaType, setMediaType] = useState("movie");
   const [resultsLabel, setResultsLabel] = useState("");
-  const [genres, setGenres]             = useState([]);
-  const [activeGenre, setActiveGenre]   = useState(null);
+  const [genres, setGenres] = useState([]);
+  const [activeGenre, setActiveGenre] = useState(null);
   const [genreDropdownOpen, setGenreDropdownOpen] = useState(false);
   const [showAdblockBanner, setShowAdblockBanner] = useState(false);
-  const [tvDetails, setTvDetails]       = useState(null);
-  const [selectedSeason, setSelectedSeason]   = useState(1);
+  const [tvDetails, setTvDetails] = useState(null);
+  const [selectedSeason, setSelectedSeason] = useState(1);
   const [selectedEpisode, setSelectedEpisode] = useState(1);
 
-  const debounceTimer   = useRef(null);
-  const searchInputRef  = useRef(null);
-  const genreDropRef    = useRef(null);
+  const debounceTimer = useRef(null);
+  const searchInputRef = useRef(null);
+  const genreDropRef = useRef(null);
 
   useEffect(() => {
     const dismissed = sessionStorage.getItem("adblock-dismissed");
@@ -140,17 +140,17 @@ function App() {
 
   const getPlayerUrl = (id, type, season = 1, episode = 1) =>
     type === "tv"
-      ? `https://vidsrc.to/embed/tv/${id}/${season}/${episode}`
-      : `https://vidsrc.to/embed/movie/${id}`;
+      ? `https://vidsrc.me/embed/tv?tmdb=${id}&season=${season}&episode=${episode}`
+      : `https://vidsrc.me/embed/movie?tmdb=${id}`;
 
-  const getTitle    = (i) => i?.title || i?.name || "";
-  const getPoster   = (i) => i?.poster_path
+  const getTitle = (i) => i?.title || i?.name || "";
+  const getPoster = (i) => i?.poster_path
     ? `https://image.tmdb.org/t/p/w500${i.poster_path}`
     : "https://via.placeholder.com/500x750?text=No+Image";
   const getBackdrop = (i) => i?.backdrop_path
     ? `https://image.tmdb.org/t/p/original${i.backdrop_path}`
     : null;
-  const getYear     = (i) => {
+  const getYear = (i) => {
     const d = i?.release_date || i?.first_air_date;
     return d ? new Date(d).getFullYear() : "N/A";
   };
@@ -226,7 +226,7 @@ function App() {
               <span className="spinner" />
             ) : (
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                <circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" />
               </svg>
             )}
           </span>
