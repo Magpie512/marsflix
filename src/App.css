@@ -1051,3 +1051,8 @@ header h1:hover {
   pointer-events: none;
   z-index: 2;
 }
+
+/* webkit for the scroll bar themed green*/
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); }
+::-webkit-scrollbar-thumb { background-color: rgba(143, 188, 90, 0.3); }
